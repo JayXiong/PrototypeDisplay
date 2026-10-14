@@ -1,0 +1,39 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: proto-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-proto2024}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-proto_display}
+      TZ: Asia/Shanghai
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-proto2024}"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  app:
+    build: .
+    container_name: proto-app
+    restart: always
+    ports:
+      - "${APP_PORT:-8080}:8000"
+    environment:
+      DATABASE_URL: mysql+pymysql://root:${MYSQL_ROOT_PASSWORD:-proto2024}@db:3306/${MYSQL_DATABASE:-proto_display}?charset=utf8mb4
+      SECRET_KEY: ${SECRET_KEY:-please-change-this-secret-key}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      TZ: Asia/Shanghai
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
+  uploads_data:

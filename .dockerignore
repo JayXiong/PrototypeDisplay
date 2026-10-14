@@ -1,0 +1,8 @@
+node_modules
+frontend/dist
+backend/uploads
+backend/static
+__pycache__
+.git
+.env
+*.md

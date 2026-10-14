@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>原型展示平台 - 思维导图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: #1e293b;
+    overflow: auto;
+    padding: 40px;
+  }
+  .map-wrap { display: flex; align-items: center; min-height: 100vh; }
+  .root {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff; font-size: 20px; font-weight: 700;
+    padding: 24px 32px; border-radius: 16px; white-space: nowrap;
+    box-shadow: 0 8px 24px rgba(99,102,241,.4);
+  }
+  .branch { display: flex; align-items: center; margin-left: 40px; position: relative; }
+  .branch > .node-col { display: flex; flex-direction: column; justify-content: center; }
+  .children { display: flex; flex-direction: column; margin-left: 40px; }
+  .node {
+    position: relative; margin: 5px 0; padding: 8px 14px;
+    background: #334155; color: #e2e8f0; border-radius: 8px;
+    white-space: nowrap; font-size: 14px; cursor: default;
+    border-left: 3px solid var(--c, #6366f1);
+  }
+  /* 连接线 */
+  .branch::before {
+    content: ""; position: absolute; left: -40px; top: 50%; width: 40px; height: 2px;
+    background: var(--c, #6366f1);
+  }
+  .children > .branch::before { left: -40px; }
+  .children > .branch::after {
+    content: ""; position: absolute; left: -40px; top: 0; bottom: 50%;
+    width: 2px; background: var(--c, #6366f1);
+  }
+  .children > .branch:first-child::after { top: 50%; }
+  .children > .branch:only-child::after { display: none; }
+  /* 层级配色 */
+  .lvl1 { --c: #6366f1; }
+  .lvl1 > .node-col > .node { background: #4f46e5; color: #fff; font-weight: 600; }
+  .lvl2 { --c: #0ea5e9; }
+  .lvl2 > .node-col > .node { background: #07598533; border-left-color: #0ea5e9; }
+  .lvl3 { --c: #10b981; }
+  .lvl4 { --c: #f59e0b; }
+  /* 折叠 */
+  .node.foldable { cursor: pointer; user-select: none; padding-right: 28px; }
+  .node.foldable::after {
+    content: "−"; position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    color: #94a3b8; font-weight: 700;
+  }
+  .collapsed > .node-col > .node.foldable::after { content: "+"; }
+  .collapsed > .children { display: none; }
+  .collapsed > .node-col > .node { opacity: .85; }
+  .tip { position: fixed; bottom: 16px; right: 20px; color: #64748b; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="map-wrap">
+  <div class="root">原型展示平台</div>
+
+  <div class="branch lvl1" style="--c:#6366f1">
+    <div class="node-col">
+
+      <div class="branch lvl2" style="--c:#0ea5e9">
+        <div class="node-col">
+          <div class="node foldable">技术架构</div>
+          <div class="children">
+            <div class="branch lvl3"><div class="node-col"><div class="node">后端：Python（FastAPI）</div>
+              <div class="children">
+                <div class="branch lvl4"><div class="node-col"><div class="node">REST API</div></div></div>
+                <div class="branch lvl4"><div class="node-col"><div class="node">原型静态文件服务</div></div></div>
+              </div>
+            </div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">数据库：MySQL</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">前端：Vue 3 管理后台</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">部署：单机 / Docker 可选</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="branch lvl2" style="--c:#0ea5e9">
+        <div class="node-col">
+          <div class="node foldable">用户认证（单管理员）</div>
+          <div class="children">
+            <div class="branch lvl3"><div class="node-col"><div class="node">仅一个管理员账号（配置初始化）</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">账号密码登录 + JWT 鉴权</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">密码哈希存储，可修改密码</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="branch lvl2" style="--c:#0ea5e9">
+        <div class="node-col">
+          <div class="node foldable">项目管理</div>
+          <div class="children">
+            <div class="branch lvl3"><div class="node-col"><div class="node">属性：名称 / 备注 / 状态 / slug 短链</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node foldable">新建项目</div>
+              <div class="children">
+                <div class="branch lvl4"><div class="node-col"><div class="node">单个 HTML 文件</div></div></div>
+                <div class="branch lvl4"><div class="node-col"><div class="node">ZIP 包（index.html + css/js/img）</div></div></div>
+              </div>
+            </div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">更新原型：重新上传覆盖 / 保留历史版本（可选）</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">禁用 / 启用：禁用后访客见提示页</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">删除项目：连同文件与统计（二次确认）</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="branch lvl2" style="--c:#0ea5e9">
+        <div class="node-col">
+          <div class="node foldable">原型访问</div>
+          <div class="children">
+            <div class="branch lvl3"><div class="node-col"><div class="node">链接：/p/{slug}，无需登录</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">后端路由返回文件，中间件记录日志</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">404 页 / 禁用提示页</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="branch lvl2" style="--c:#0ea5e9">
+        <div class="node-col">
+          <div class="node foldable">访问统计</div>
+          <div class="children">
+            <div class="branch lvl3"><div class="node-col"><div class="node">采集：项目 ID / IP / UA / 时间</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">维度：按小时 / 按天</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node foldable">视图</div>
+              <div class="children">
+                <div class="branch lvl4"><div class="node-col"><div class="node">总览：总量 / 今日 / 趋势折线图</div></div></div>
+                <div class="branch lvl4"><div class="node-col"><div class="node">单项目：趋势 + 最近访问记录</div></div></div>
+                <div class="branch lvl4"><div class="node-col"><div class="node">项目访问量排行</div></div></div>
+              </div>
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="branch lvl2" style="--c:#0ea5e9">
+        <div class="node-col">
+          <div class="node foldable">数据库设计</div>
+          <div class="children">
+            <div class="branch lvl3"><div class="node-col"><div class="node">user：id / username / password_hash</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">project：id / name / slug / remark / status / created_at</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">visit_log：project_id / ip / ua / visited_at（建索引）</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="branch lvl2" style="--c:#0ea5e9">
+        <div class="node-col">
+          <div class="node foldable">页面结构（Vue）</div>
+          <div class="children">
+            <div class="branch lvl3"><div class="node-col"><div class="node">登录页</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">项目列表页（首页）：搜索 / 筛选 / 复制链接</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">项目编辑页：上传更新 / 编辑信息</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">统计页：总览图表 / 单项目统计</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="branch lvl2" style="--c:#0ea5e9">
+        <div class="node-col">
+          <div class="node foldable">非功能需求</div>
+          <div class="children">
+            <div class="branch lvl3"><div class="node-col"><div class="node">上传大小限制（如 50MB）</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">文件存储目录与备份</div></div></div>
+            <div class="branch lvl3"><div class="node-col"><div class="node">访问日志定期归档（可选）</div></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="tip">点击带 − / + 的节点可折叠展开</div>
+<script>
+  document.querySelectorAll('.foldable').forEach(function (n) {
+    n.addEventListener('click', function () {
+      n.parentElement.parentElement.classList.toggle('collapsed');
+    });
+  });
+</script>
+</body>
+</html>
