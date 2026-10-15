@@ -1,5 +1,14 @@
 # 原型展示平台
 
+[简体中文](README.md) | [English](README.en.md)
+
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?logo=fastapi&logoColor=white)
+![Vue](https://img.shields.io/badge/Vue-3.4+-4FC08D?logo=vuedotjs&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-一键部署-2496ED?logo=docker&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green)
+
 上传 HTML 原型 → 生成访问链接 → 统计访问量。单人管理，Docker 一键部署。
 
 ## 快速部署（推荐，仅需安装 Docker）
